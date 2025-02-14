@@ -24,11 +24,14 @@ function updateQuantity(element, isIncrease) {
 // Fonction pour supprimer complètement un produit du panier
 // element : c'est le bouton poubelle sur lequel on a cliqué
 function removeProduct(element) {
-    // On trouve la carte du produit correspondant et on la supprime du DOM
-    element.closest('.card').remove();
+    // On demande confirmation avant de supprimer
+    if (confirm("Voulez-vous vraiment supprimer ce produit ?")) {
+        // On trouve la carte du produit correspondant et on la supprime du DOM
+        element.closest('.card').remove();
 
-    // Après suppression, on recalcule le prix total
-    updateTotalPrice();
+        // Après suppression, on recalcule le prix total
+        updateTotalPrice();
+    }
 }
 
 // Fonction pour liker ou unliker un produit en changeant la couleur du cœur
@@ -37,6 +40,13 @@ function toggleHeartColor(element) {
     // On ajoute ou on enlève la classe 'liked' pour changer la couleur du cœur
     // Si la classe 'liked' est présente, le cœur est coloré ; sinon, il reste normal
     element.classList.toggle('liked');
+
+    // On affiche un message pour informer l'utilisateur de son action
+    if (element.classList.contains("liked")) {
+        alert("Vous avez aimé ce produit ❤");
+    } else {
+        alert("Vous n'aimez plus ce produit ❌");
+    }
 }
 
 // Fonction pour recalculer et afficher le prix total des produits dans le panier
@@ -56,8 +66,22 @@ function updateTotalPrice() {
     });
 
     // On affiche le prix total avec deux décimales, suivi du signe '$'
-    document.querySelector('.total').textContent = totalPrice.toFixed(2) + ' $';
+    const totalElement = document.querySelector('.total');
+    totalElement.textContent = totalPrice.toFixed(2) + ' $';
+
+    // Effet de clignotement du total avec changement de couleur
+    totalElement.classList.add('blink');
+    setTimeout(() => totalElement.classList.remove('blink'), 1500);
 }
+
+// Fonction pour ajouter un effet de zoom et de couleur quand on clique sur une image
+document.querySelectorAll('.card img').forEach((img) => {
+    img.addEventListener('click', () => {
+        // On applique une animation de zoom et de changement de couleur
+        img.classList.add('image-clicked');
+        setTimeout(() => img.classList.remove('image-clicked'), 500);
+    });
+});
 
 // Cette partie du code s'exécute quand la page est complètement chargée
 document.addEventListener('DOMContentLoaded', function () {
